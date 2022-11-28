@@ -11,7 +11,7 @@ Thanks to the author Kelvin william
 
 ## Some Page Capture
 
-![login_page](./doc/img/add_page.PNG)
+![login_page](./doc/img/login_page.PNG)
 ![home_page](./doc/img/home_page.PNG)
 ![add_page](./doc/img/add_page.PNG)
 ![detail_page](./doc/img/detail_page.PNG)
