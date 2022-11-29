@@ -11,7 +11,8 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, '/detail'),
+      onTap: () =>
+          Navigator.pushNamed(context, '/detail', arguments: {"id": item.id}),
       child: Container(
           height: 100,
           margin: const EdgeInsets.symmetric(vertical: 8.0),

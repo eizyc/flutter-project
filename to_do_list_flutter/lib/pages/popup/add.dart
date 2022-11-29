@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart' hide Colors;
 import 'package:to_do_list_flutter/common/components/button.dart';
 import 'package:to_do_list_flutter/common/components/input.dart';
 import 'package:to_do_list_flutter/common/dao/item.dart';
 import 'package:to_do_list_flutter/common/dao/option.dart';
 import 'package:to_do_list_flutter/common/style.dart';
+import 'package:to_do_list_flutter/common/utils.dart';
+import 'package:to_do_list_flutter/service/api.dart';
 
 class Add extends StatefulWidget {
   const Add({super.key});
@@ -14,8 +18,8 @@ class Add extends StatefulWidget {
 
 class AddState extends State<Add> {
   double safeareaHeight = 0;
-  Item item = Item(title: '', content: '', createTime: DateTime.now());
-  late final List<Option> options = ["All", "ByTime", "Deadline"]
+  Item item = Item(title: '测试', content: '测试', createTime: DateTime.now());
+  final List<Option> options = ["All", "ByTime", "Deadline"]
       .map((String item) => Option(label: item, value: item))
       .toList();
 
@@ -23,6 +27,20 @@ class AddState extends State<Add> {
   initState() {
     super.initState();
     safeareaHeight = MediaQuery.of(context).padding.bottom;
+  }
+
+  addItem(ctx) async {
+    try {
+      item.id = DateTime.now().millisecondsSinceEpoch.toString();
+      if (await API.add(item)) {
+        await toast("Success!");
+        Navigator.pop(ctx);
+      } else {
+        toast("Failure!");
+      }
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   @override
@@ -100,9 +118,7 @@ class AddState extends State<Add> {
                   const SizedBox(height: 16.0),
                   MyButton(
                       dark: false,
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/home');
-                      },
+                      onPressed: () => addItem(context),
                       text: "ADD TODO"),
                   SizedBox(height: safeareaHeight),
                 ]),

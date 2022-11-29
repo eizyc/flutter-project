@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart' hide Colors;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:to_do_list_flutter/common/components/item_card.dart';
 import 'package:to_do_list_flutter/common/dao/item.dart';
 import 'package:to_do_list_flutter/common/dao/option.dart';
 import 'package:to_do_list_flutter/common/style.dart';
 import 'package:to_do_list_flutter/common/components/filter.dart';
 import 'package:to_do_list_flutter/pages/popup/add.dart';
+import 'package:to_do_list_flutter/service/api.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   String _selectedFilter = '';
-  final List<Item> list = [
+  List<Item> list = [
     Item(
         title: 'Design Logo',
         content: 'Make logo for the mini project',
@@ -80,12 +82,18 @@ class HomeState extends State<Home> {
     }
   }
 
+  getList() async {
+    var data = await API.getList();
+    setState(() {
+      list = data;
+      sortedList = List.from(list);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    setState(() {
-      sortedList = list;
-    });
+    getList();
   }
 
   @override

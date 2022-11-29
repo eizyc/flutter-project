@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:to_do_list_flutter/common/dao/item.dart';
 import 'package:to_do_list_flutter/common/style.dart';
 import 'package:to_do_list_flutter/pages/popup/delete.dart';
+import 'package:to_do_list_flutter/service/api.dart';
 
 class Detail extends StatefulWidget {
   const Detail({super.key});
@@ -12,12 +13,22 @@ class Detail extends StatefulWidget {
 }
 
 class _DetailState extends State<Detail> {
-  Item item = Item(
-      title: 'Make UI Design',
-      content:
-          'Make Ui design for the mini project post figma link to the trello using view only link. Design List : \nlogin \nregister \nhome \ndetail \nadd \nedit \ndelete \nprofile',
-      createTime: DateTime.parse("2021-12-22 11:47:00"),
-      deadline: DateTime.parse("2021-12-23 11:47:00"));
+  Item? item;
+
+  getList(String id) async {
+    var data = await API.getDetail(id);
+    setState(() {
+      item = data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dynamic args = ModalRoute.of(context)!.settings.arguments;
+    String id = args['id'];
+    getList(id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +80,18 @@ class _DetailState extends State<Detail> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 24),
-                child: Text(item.title.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 26,
-                      color: Colors.primaryDarkValue,
-                      fontFamily: 'BebasNeue',
-                    )),
+                child: item?.title != null
+                    ? Text(item!.title.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 26,
+                          color: Colors.primaryDarkValue,
+                          fontFamily: 'BebasNeue',
+                        ))
+                    : const SizedBox.shrink(),
               ),
               Expanded(
                   flex: 1,
-                  child: Text(item.content,
+                  child: Text(item?.content ?? '',
                       style: const TextStyle(
                           fontSize: 16,
                           color: Colors.primaryDarkValue,
@@ -86,11 +99,13 @@ class _DetailState extends State<Detail> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Created at ${DateFormat.yMMMMd('en_US').format(item.createTime)}",
-                    style: const TextStyle(
-                        color: Colors.primaryDarkValue, fontSize: 14),
-                  )
+                  item?.createTime != null
+                      ? Text(
+                          "Created at ${DateFormat.yMMMMd('en_US').format(item!.createTime)}",
+                          style: const TextStyle(
+                              color: Colors.primaryDarkValue, fontSize: 14),
+                        )
+                      : const SizedBox.shrink()
                 ],
               )
             ],
