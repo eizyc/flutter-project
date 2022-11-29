@@ -1,18 +1,26 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart' hide Colors;
 import 'package:intl/intl.dart';
 import 'package:to_do_list_flutter/common/dao/item.dart';
 import 'package:to_do_list_flutter/common/style.dart';
+import 'package:to_do_list_flutter/common/utils.dart';
 
 class ItemCard extends StatelessWidget {
   final Item item;
+  final Function refresh;
 
-  const ItemCard({super.key, required this.item});
+  const ItemCard({super.key, required this.item, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () =>
-          Navigator.pushNamed(context, '/detail', arguments: {"id": item.id}),
+      onTap: () async {
+        await Navigator.pushNamed(context, '/detail',
+            arguments: {"id": item.id});
+        dynamic res = ModalRoute.of(context)!.settings.arguments;
+        if (res?['refresh'] != null) refresh();
+      },
       child: Container(
           height: 100,
           margin: const EdgeInsets.symmetric(vertical: 8.0),

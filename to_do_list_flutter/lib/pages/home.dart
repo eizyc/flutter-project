@@ -5,10 +5,13 @@ import 'package:to_do_list_flutter/common/dao/item.dart';
 import 'package:to_do_list_flutter/common/dao/option.dart';
 import 'package:to_do_list_flutter/common/style.dart';
 import 'package:to_do_list_flutter/common/components/filter.dart';
+import 'package:to_do_list_flutter/common/utils.dart';
 import 'package:to_do_list_flutter/pages/popup/add.dart';
 import 'package:to_do_list_flutter/service/api.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
   HomeState createState() => HomeState();
 }
@@ -155,7 +158,9 @@ class HomeState extends State<Home> {
               Expanded(
                 flex: 1,
                 child: ListView(
-                  children: sortedList.map((e) => ItemCard(item: e)).toList(),
+                  children: sortedList
+                      .map((e) => ItemCard(item: e, refresh: getList))
+                      .toList(),
                 ),
               )
             ],
@@ -163,8 +168,8 @@ class HomeState extends State<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(PageRouteBuilder(
+        onPressed: () async {
+          final result = await Navigator.of(context).push(PageRouteBuilder(
               opaque: false,
               pageBuilder: (context, animation, secondaryAnimation) =>
                   const Add(),
@@ -182,6 +187,7 @@ class HomeState extends State<Home> {
                   child: child,
                 );
               }));
+          if (result?['refresh'] != null) getList();
         },
         backgroundColor: Colors.primaryValue,
         tooltip: 'Add',

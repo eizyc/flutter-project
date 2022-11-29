@@ -55,7 +55,8 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 16.0),
                       MyButton(
                           onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/home');
+                            Navigator.pushReplacementNamed(context, '/home',
+                                arguments: {});
                           },
                           text: "SIGN IN"),
                       const SizedBox(height: 16.0),

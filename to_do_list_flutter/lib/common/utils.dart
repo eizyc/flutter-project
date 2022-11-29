@@ -1,4 +1,5 @@
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meta/meta.dart';
 
 void Function(String) log = (msg) {
   Fluttertoast.showToast(msg: msg, timeInSecForIosWeb: 10);

@@ -10,7 +10,8 @@ class API {
   static Future<List<Item>> getList() async {
     try {
       Response response = await get(Uri.https(base, 'list'));
-      Map res = jsonDecode(response.body);
+      Utf8Decoder decode = const Utf8Decoder();
+      Map res = jsonDecode(decode.convert(response.bodyBytes));
       List<dynamic> list = res['data']['list'];
       return list.map((e) => Item.fromJson(e)).toList();
     } catch (e) {
@@ -20,7 +21,8 @@ class API {
 
   static Future<Item> getDetail(id) async {
     Response response = await get(Uri.https(base, 'detail', {"id": id}));
-    Map res = jsonDecode(response.body);
+    Utf8Decoder decode = const Utf8Decoder();
+    Map res = jsonDecode(decode.convert(response.bodyBytes));
     dynamic data = res['data']['data'];
     return Item.fromJson(data);
   }
@@ -34,8 +36,9 @@ class API {
   }
 
   static Future<bool> remove(String id) async {
-    Response response = await delete(Uri.https(base, 'delete'),
-        body: {"id": id}, headers: {'Content-Type': 'application/json'});
+    Response response = await delete(Uri.https(base, 'delete', {"id": id}),
+        body: jsonEncode({"id": id}),
+        headers: {'Content-Type': 'application/json'});
     Map res = jsonDecode(response.body);
     bool data = res['success'];
     return data;

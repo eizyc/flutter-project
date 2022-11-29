@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Colors;
 import 'package:intl/intl.dart';
 import 'package:to_do_list_flutter/common/dao/item.dart';
 import 'package:to_do_list_flutter/common/style.dart';
+import 'package:to_do_list_flutter/common/utils.dart';
 import 'package:to_do_list_flutter/pages/popup/delete.dart';
 import 'package:to_do_list_flutter/service/api.dart';
 
@@ -14,8 +15,9 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   Item? item;
+  String id = "";
 
-  getList(String id) async {
+  getDetail(String id) async {
     var data = await API.getDetail(id);
     setState(() {
       item = data;
@@ -26,8 +28,11 @@ class _DetailState extends State<Detail> {
   void initState() {
     super.initState();
     dynamic args = ModalRoute.of(context)!.settings.arguments;
-    String id = args['id'];
-    getList(id);
+    String temp = args['id'];
+    getDetail(temp);
+    setState(() {
+      id = temp;
+    });
   }
 
   @override
@@ -48,24 +53,26 @@ class _DetailState extends State<Detail> {
             const SizedBox(width: 8),
             InkWell(
               onTap: () {
-                Navigator.of(context).push(PageRouteBuilder(
-                    opaque: false,
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const Delete(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(0.0, 1.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          Delete(id: id),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(0.0, 1.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
 
-                      var tween = Tween(begin: begin, end: end)
-                          .chain(CurveTween(curve: curve));
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
 
-                      return SlideTransition(
-                        position: animation.drive(tween),
-                        child: child,
-                      );
-                    }));
+                        return SlideTransition(
+                          position: animation.drive(tween),
+                          child: child,
+                        );
+                      }),
+                );
               },
               child: const Icon(Icons.delete_outline_rounded,
                   color: Colors.primaryDarkValue),

@@ -31,15 +31,14 @@ class AddState extends State<Add> {
 
   addItem(ctx) async {
     try {
-      item.id = DateTime.now().millisecondsSinceEpoch.toString();
       if (await API.add(item)) {
         await toast("Success!");
-        Navigator.pop(ctx);
+        Navigator.pop(ctx, {"refresh": true});
       } else {
         toast("Failure!");
       }
     } catch (e) {
-      log(e.toString());
+      toast(e.toString());
     }
   }
 
