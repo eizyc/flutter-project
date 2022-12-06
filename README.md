@@ -1,6 +1,6 @@
-# to_do_list_flutter
+# flutter project
 
-A to_do_list Flutter project.
+A Flutter project with backend.
 
 ## Figma Source
 
